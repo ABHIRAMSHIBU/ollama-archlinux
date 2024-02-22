@@ -1,6 +1,6 @@
 pkgbase = ollama
 	pkgdesc = Create, run and share large language models (LLMs)
-	pkgver = 0.1.25
+	pkgver = 0.1.27
 	pkgrel = 1
 	url = https://github.com/jmorganca/ollama
 	arch = x86_64
@@ -8,8 +8,8 @@ pkgbase = ollama
 	makedepends = cmake
 	makedepends = git
 	makedepends = go
-	source = git+https://github.com/jmorganca/ollama#commit=42e77e2a699ab0eb2f27fe8cde6f4b7f6eef225a
-	source = llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=6c00a066928b0475b865a2e3e709e2166e02d548
+	source = git+https://github.com/jmorganca/ollama#commit=8782dd562819606c6b84f0e075e987f6744e83d2
+	source = llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=96633eeca1265ed03e57230de54032041c58f9cd
 	source = ollama.service
 	source = sysusers.conf
 	source = tmpfiles.d
