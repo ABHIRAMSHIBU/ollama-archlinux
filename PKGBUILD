@@ -4,15 +4,15 @@
 
 pkgname=ollama
 pkgdesc='Create, run and share large language models (LLMs)'
-pkgver=0.1.28
+pkgver=0.1.29
 pkgrel=1
 arch=(x86_64)
 url='https://github.com/jmorganca/ollama'
 license=(MIT)
-_ollamacommit=3b4bab3dc55c615a14b1ae74ea64815d3891b5b0 # tag: v0.1.28
+_ollamacommit=369eda65f53af3ea38e4e9a80be7d7ec5baa5c1c # tag: v0.1.29
 # The llama.cpp git submodule commit hash can be found here:
-# https://github.com/jmorganca/ollama/tree/v0.1.28/llm
-_llama_cpp_commit=87c91c07663b707e831c59ec373b5e665ff9d64a
+# https://github.com/jmorganca/ollama/tree/v0.1.29/llm
+_llama_cpp_commit=ceca1aef0738b57951cd12c603c3477e75312dec
 makedepends=(cmake git go)
 source=(git+$url#commit=$_ollamacommit
         llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=$_llama_cpp_commit
