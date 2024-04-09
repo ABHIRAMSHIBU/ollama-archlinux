@@ -4,14 +4,14 @@
 
 pkgname=ollama
 pkgdesc='Create, run and share large language models (LLMs)'
-pkgver=0.1.30
-pkgrel=2
+pkgver=0.1.31
+pkgrel=1
 arch=(x86_64)
 url='https://github.com/ollama/ollama'
 license=(MIT)
-_ollamacommit=756c2575535641f1b96d94b4214941b90f4c30c7 # tag: v0.1.30
+_ollamacommit=dc011d16b9ff160c0be3829fc39a43054f0315d0 # tag: v0.1.31
 # The llama.cpp git submodule commit hash can be found here:
-# https://github.com/ollama/ollama/tree/v0.1.30/llm
+# https://github.com/ollama/ollama/tree/v0.1.31/llm
 _llama_cpp_commit=ad3a0505e3b6cd777259ee35e61d428357ffc565
 makedepends=(cmake git go)
 source=(git+$url#commit=$_ollamacommit
@@ -19,7 +19,7 @@ source=(git+$url#commit=$_ollamacommit
         ollama.service
         sysusers.conf
         tmpfiles.d)
-b2sums=('b2b108add6c3806bb6084b7f0e78c6a19b9f0b518079ae5f7b416b10fac292d740df5f26f3d1aec7d106900ff07af940ade35891a3c6e9453eb26eb7e9a6e373'
+b2sums=('f3659e606be342822b13021b2468c77c9de47bb54a97bd16640196d8d49590fbabe100e45964c59564dca8e0dda71f117f9c4ebd5a16d07fdcd066ce296b25dc'
         'eaa62efe3549124d055cad5761343c06f8059db93445e639c4e072d234a998691999145116f33d86213a380a946bdef8a05167f168be3a47427ca1556c8e7634'
         'a773bbf16cf5ccc2ee505ad77c3f9275346ddf412be283cfeaee7c2e4c41b8637a31aaff8766ed769524ebddc0c03cf924724452639b62208e578d98b9176124'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
