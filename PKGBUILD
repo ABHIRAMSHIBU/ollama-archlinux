@@ -4,8 +4,8 @@
 
 pkgname=ollama
 pkgdesc='Create, run and share large language models (LLMs)'
-pkgver=0.1.32
-pkgrel=1
+pkgver=0.1.33
+pkgrel=2
 arch=(x86_64)
 url='https://github.com/ollama/ollama'
 license=(MIT)
@@ -18,15 +18,19 @@ source=(git+$url#commit=$_ollamacommit
         llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=$_llama_cpp_commit
         ollama.service
         sysusers.conf
-        tmpfiles.d)
+        tmpfiles.d
+        "mixtral.patch::https://github.com/ollama/ollama/commit/435cc866a3fbabb5029b8a2496631847a871616f.diff")
 b2sums=('12b952df20a194e7b41040574b449aa9781dc40e9316d6d459caf0228c51c588d93a79223fe4009ca6532dffb9846853a6e74769db15c25135032bf5ccfde65e'
         'de8f50fb5a99a0251f6a0f3d596975cf43ad76770ac2edeaac6497b81214a7f31574b499f10b77f0542f9d46c5d33e0f5ac1e49fa72343d860c70fd3ca0ca113'
         '2bf4c2076b7841de266ec40da2e2cbb675dcbfebfa8aed8d4ede65435854cb43d39ea32bc9210cfc28a042382dd0094a153e351edfa5586eb7c6a0783f3bc517'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
-        'e8f2b19e2474f30a4f984b45787950012668bf0acb5ad1ebb25cd9776925ab4a6aa927f8131ed53e35b1c71b32c504c700fe5b5145ecd25c7a8284373bb951ed')
+        'e8f2b19e2474f30a4f984b45787950012668bf0acb5ad1ebb25cd9776925ab4a6aa927f8131ed53e35b1c71b32c504c700fe5b5145ecd25c7a8284373bb951ed'
+        '3326071dcd80ae8078d002cb98f7f61cb2493cc0de33cf2923f0e28675ebb115455c82be7cb0890501accc0fd34b1805ac0ae230dcac970570331254aaf756c0')
 
 prepare() {
   cd $pkgname
+
+  patch -p1 -i ../mixtral.patch
 
   rm -frv llm/llama.cpp
 
