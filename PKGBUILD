@@ -5,7 +5,7 @@
 pkgbase=ollama
 pkgname=(ollama ollama-cuda ollama-rocm)
 pkgver=0.1.33
-pkgrel=1
+pkgrel=3
 pkgdesc='Create, run and share large language models (LLMs)'
 arch=(x86_64)
 url='https://github.com/ollama/ollama'
