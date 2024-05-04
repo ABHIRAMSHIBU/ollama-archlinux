@@ -1,7 +1,7 @@
 pkgbase = ollama
 	pkgdesc = Create, run and share large language models (LLMs)
 	pkgver = 0.1.33
-	pkgrel = 3
+	pkgrel = 4
 	url = https://github.com/ollama/ollama
 	arch = x86_64
 	license = MIT
@@ -15,13 +15,11 @@ pkgbase = ollama
 	source = git+https://github.com/ollama/ollama#commit=9164b0161bcb24e543cba835a8863b80af2c0c21
 	source = llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=952d03dbead16e4dbdd1d3458486340673cc2465
 	source = ollama.service
-	source = ollama-rocm.service
 	source = sysusers.conf
 	source = tmpfiles.d
 	b2sums = 7308a93697cb66b88869ced655c178c2598315252c0daa50b6a2f2dfe20a10b311ceb1a30b1310a61c6386b2a99e91b741c31b154967e626c4225670e2919b70
 	b2sums = f2e7fdf5eaf21f725fa868b4dd18ab602a4ec3f6bdd703bc674bf6537e9b57c7c87be945a2b6b774b6a7abfb6a36b2d15cf40ea67ba0c7958ced7eea46880702
 	b2sums = 2bf4c2076b7841de266ec40da2e2cbb675dcbfebfa8aed8d4ede65435854cb43d39ea32bc9210cfc28a042382dd0094a153e351edfa5586eb7c6a0783f3bc517
-	b2sums = 1397e36c703799e60bc53ec365f1f9f8152091d48d704adea2fda3e7599d938274bec825b09b0a7eb56b7fce2bed1b6d1a034687138d68c51a0133d75a1eb12f
 	b2sums = 3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec
 	b2sums = e8f2b19e2474f30a4f984b45787950012668bf0acb5ad1ebb25cd9776925ab4a6aa927f8131ed53e35b1c71b32c504c700fe5b5145ecd25c7a8284373bb951ed
 
@@ -30,10 +28,12 @@ pkgname = ollama
 
 pkgname = ollama-cuda
 	pkgdesc = Create, run and share large language models (LLMs) with CUDA
+	optdepends = nvidia-utils: monitor GPU usage with nvidia-smi
 	provides = ollama
 	conflicts = ollama
 
 pkgname = ollama-rocm
 	pkgdesc = Create, run and share large language models (LLMs) with ROCm
+	depends = hipblas
 	provides = ollama
 	conflicts = ollama
