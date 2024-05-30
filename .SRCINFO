@@ -1,6 +1,6 @@
 pkgbase = ollama
 	pkgdesc = Create, run and share large language models (LLMs)
-	pkgver = 0.1.38
+	pkgver = 0.1.39
 	pkgrel = 1
 	url = https://github.com/ollama/ollama
 	arch = x86_64
