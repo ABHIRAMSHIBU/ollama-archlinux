@@ -4,24 +4,24 @@
 
 pkgbase=ollama
 pkgname=(ollama ollama-cuda ollama-rocm)
-pkgver=0.1.39
-pkgrel=2
+pkgver=0.1.41
+_ollamacommit=476fb8e89242720a7cdd57400ba928de4dde9cc1 # tag: v0.1.41
+# The llama.cpp git submodule commit hash can be found here:
+# https://github.com/ollama/ollama/tree/v0.1.41/llm
+_llama_cpp_commit=5921b8f089d3b7bda86aac5a66825df6a6c10603
+pkgrel=1
 pkgdesc='Create, run and share large language models (LLMs)'
 arch=(x86_64)
 url='https://github.com/ollama/ollama'
 license=(MIT)
-_ollamacommit=ad897080a299bf86aee16b498edb5ddb250edd35 # tag: v0.1.39
-# The llama.cpp git submodule commit hash can be found here:
-# https://github.com/ollama/ollama/tree/v0.1.39/llm
-_llama_cpp_commit=74f33adf5f8b20b08fc5a6aa17ce081abe86ef2f
 makedepends=(clblast cmake cuda git go rocm-hip-sdk rocm-opencl-sdk)
 source=(git+$url#commit=$_ollamacommit
         llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=$_llama_cpp_commit
         ollama.service
         sysusers.conf
         tmpfiles.d)
-b2sums=('b76857b79e9ce39d8e1f98f8b33155fd83fb9bde75c83eaaa0e6af42add019c5ae6ec2335e10334895e97c1de81cb2544524597928d9383e5c1157a12e9418e7'
-        'a44652ceb62c4c24f6f858fbb734366991d3481af208c976326cd6a572b85faf73d822fdb674fb63bfc879c62b76e24e7cfcf343ecaa1ef2d12784407b923822'
+b2sums=('b05df8c2ea49d332a394c2688b04bda67718f2f28d251adfaebf7cc04f7e57482275b8e5e8373d6be26b44613f16fe1c50954b55b2378309872af7935db055bb'
+        '21643fc46052e673f747606a774bb7b161e41e3c0166700281d995018003d0af573db6d7c2ddf68765449545b72b41713f9335aa3485df90871431bc66097b27'
         '2bf4c2076b7841de266ec40da2e2cbb675dcbfebfa8aed8d4ede65435854cb43d39ea32bc9210cfc28a042382dd0094a153e351edfa5586eb7c6a0783f3bc517'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
         'e8f2b19e2474f30a4f984b45787950012668bf0acb5ad1ebb25cd9776925ab4a6aa927f8131ed53e35b1c71b32c504c700fe5b5145ecd25c7a8284373bb951ed')
