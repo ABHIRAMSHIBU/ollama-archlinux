@@ -1,13 +1,14 @@
 # Maintainer: Alexander F. Rødseth <xyproto@archlinux.org>
+# Contributor: Steven Allen <steven@stebalien.com>
 # Contributor: Matt Harrison <matt@harrison.us.com>
 # Contributor: Kainoa Kanter <kainoa@t1c.dev>
 
 pkgbase=ollama
 pkgname=(ollama ollama-cuda ollama-rocm)
-pkgver=0.1.41
-_ollamacommit=476fb8e89242720a7cdd57400ba928de4dde9cc1 # tag: v0.1.41
+pkgver=0.1.42
+_ollamacommit=385a32ecb5b2987f9cd7decaf0052f0a316ac6f6 # tag: v0.1.42
 # The llama.cpp git submodule commit hash can be found here:
-# https://github.com/ollama/ollama/tree/v0.1.41/llm
+# https://github.com/ollama/ollama/tree/v0.1.42/llm
 _llama_cpp_commit=5921b8f089d3b7bda86aac5a66825df6a6c10603
 pkgrel=1
 pkgdesc='Create, run and share large language models (LLMs)'
@@ -20,9 +21,9 @@ source=(git+$url#commit=$_ollamacommit
         ollama.service
         sysusers.conf
         tmpfiles.d)
-b2sums=('b05df8c2ea49d332a394c2688b04bda67718f2f28d251adfaebf7cc04f7e57482275b8e5e8373d6be26b44613f16fe1c50954b55b2378309872af7935db055bb'
+b2sums=('f0bfb4bb1c1133b722bb4b185c46ee1a9b4407e7f61292cdf2f2d69b6a24078c35bd1ad4069d8602943e7e1caa85dfae0233a912408d5b6337afea720cf9f684'
         '21643fc46052e673f747606a774bb7b161e41e3c0166700281d995018003d0af573db6d7c2ddf68765449545b72b41713f9335aa3485df90871431bc66097b27'
-        '2bf4c2076b7841de266ec40da2e2cbb675dcbfebfa8aed8d4ede65435854cb43d39ea32bc9210cfc28a042382dd0094a153e351edfa5586eb7c6a0783f3bc517'
+        '18a1468f5614f9737f6ff2e6c7dfb3dfc0ba82836a98e3f14f8e544e3aba8f74ef0a03c5376a0d0aa2e59e948701d7c639dda69477b051b732896021e753e32e'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
         'e8f2b19e2474f30a4f984b45787950012668bf0acb5ad1ebb25cd9776925ab4a6aa927f8131ed53e35b1c71b32c504c700fe5b5145ecd25c7a8284373bb951ed')
 
@@ -45,16 +46,16 @@ prepare() {
 }
 
 build() {
-  export ROCM_PATH=/disabled
-  export CUDA_LIB_DIR=/disabled
-  export CGO_CFLAGS="$CFLAGS" CGO_CPPFLAGS="$CPPFLAGS" CGO_CXXFLAGS="$CXXFLAGS" CGO_LDFLAGS="$LDFLAGS"
   export CFLAGS+=' -w'
   export CXXFLAGS+=' -w'
+  export CGO_CFLAGS="$CFLAGS" CGO_CPPFLAGS="$CPPFLAGS" CGO_CXXFLAGS="$CXXFLAGS" CGO_LDFLAGS="$LDFLAGS"
 
   local goflags="-buildmode=pie -trimpath -mod=readonly -modcacherw"
-  local ldflags="-linkmode=external -buildid= -X github.com/ollama/ollama/version.Version=${pkgver}"
+  local ldflags="-linkmode=external -buildid= -X github.com/ollama/ollama/version.Version=${pkgver} -X github.com/ollama/ollama/server.mode=release"
 
   # Ollama with CPU only support
+  export ROCM_PATH=/disabled
+  export CUDA_LIB_DIR=/disabled
   cd $pkgbase
   go generate ./...
   go build $goflags -ldflags="$ldflags"
@@ -67,8 +68,8 @@ build() {
 
   # Ollama with ROCm support
   cd "$srcdir/$pkgbase-rocm"
-  export ROCM_PATH=/opt/rocm
   export CUDA_LIB_DIR=/disabled
+  export ROCM_PATH=/opt/rocm
   export CC=/opt/rocm/llvm/bin/clang
   export CFLAGS+=' -fcf-protection=none'
   export CXX=/opt/rocm/llvm/bin/clang++
