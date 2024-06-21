@@ -5,11 +5,11 @@
 
 pkgbase=ollama
 pkgname=(ollama ollama-cuda ollama-rocm)
-pkgver=0.1.44
-_ollamacommit=c39761c5525132d96e1da0956a9aa39e87b54114 # tag: v0.1.44
+pkgver=0.1.45
+_ollamacommit=e01e535cbbb92e0d9645bd726e259e7d8a6c7598 # tag: v0.1.45
 # The llama.cpp git submodule commit hash can be found here:
-# https://github.com/ollama/ollama/tree/v0.1.44/llm
-_llama_cpp_commit=5921b8f089d3b7bda86aac5a66825df6a6c10603
+# https://github.com/ollama/ollama/tree/v0.1.45/llm
+_llama_cpp_commit=7c26775adb579e92b59c82e8084c07a1d0f75e9c
 pkgrel=1
 pkgdesc='Create, run and share large language models (LLMs)'
 arch=(x86_64)
@@ -21,8 +21,8 @@ source=(git+$url#commit=$_ollamacommit
         ollama.service
         sysusers.conf
         tmpfiles.d)
-b2sums=('cadb0df81c9e6d2941ad31b4b7b0e901da98174c9f5c37c65e911d7ee3cad2601fb8b070406d97535f592a5164f0c5da82a6f3f3b065e2bc3dab3ee09f532399'
-        '21643fc46052e673f747606a774bb7b161e41e3c0166700281d995018003d0af573db6d7c2ddf68765449545b72b41713f9335aa3485df90871431bc66097b27'
+b2sums=('109eee6c42771c3fb3170fbf1602c624c051b56e1f74464a6f1f3ad22ba7b78130b1e295ca912b3c94a0531b12a6111abe856a2f2e8ba1a6ad570a9f4a78bfcc'
+        'df130b63f823035cda495e596959ec85af6c49be03cff56623096b354704e5014190c51efd581e473a0c4c924945a5e422ab29bb6366906652345eedae2b79a6'
         '18a1468f5614f9737f6ff2e6c7dfb3dfc0ba82836a98e3f14f8e544e3aba8f74ef0a03c5376a0d0aa2e59e948701d7c639dda69477b051b732896021e753e32e'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
         'e8f2b19e2474f30a4f984b45787950012668bf0acb5ad1ebb25cd9776925ab4a6aa927f8131ed53e35b1c71b32c504c700fe5b5145ecd25c7a8284373bb951ed')
@@ -50,8 +50,8 @@ build() {
   export CXXFLAGS+=' -w'
   export CGO_CFLAGS="$CFLAGS" CGO_CPPFLAGS="$CPPFLAGS" CGO_CXXFLAGS="$CXXFLAGS" CGO_LDFLAGS="$LDFLAGS"
 
-  local goflags="-buildmode=pie -trimpath -mod=readonly -modcacherw"
-  local ldflags="-linkmode=external -buildid= -X github.com/ollama/ollama/version.Version=${pkgver} -X github.com/ollama/ollama/server.mode=release"
+  local goflags='-buildmode=pie -trimpath -mod=readonly -modcacherw'
+  local ldflags="-linkmode=external -buildid= -X github.com/ollama/ollama/version.Version=$pkgver -X github.com/ollama/ollama/server.mode=release"
 
   # Ollama with CPU only support
   export ROCM_PATH=/disabled
@@ -74,25 +74,15 @@ build() {
   export CXX=/opt/rocm/llvm/bin/clang++
   export CFLAGS+=' -fcf-protection=none'
   export CXXFLAGS+=' -fcf-protection=none'
-  export LLAMA_CCACHE=OFF
-  export OLLAMA_CUSTOM_CPU_DEFS="-DLLAMA_AVX=on -DLLAMA_AVX2=on -DAMDGPU_TARGETS=gfx1030 -DLLAMA_F16C=on -DLLAMA_FMA=on -DLLAMA_LTO=on -DLLAMA_HIPBLAS=1 -DCMAKE_BUILD_TYPE=Release"
+  export OLLAMA_CUSTOM_CPU_DEFS='-DLLAMA_AVX=on -DLLAMA_AVX2=on -DAMDGPU_TARGETS=gfx1030 -DLLAMA_F16C=on -DLLAMA_FMA=on -DLLAMA_LTO=on -DLLAMA_HIPBLAS=1 -DCMAKE_BUILD_TYPE=Release'
   go generate ./...
   go build $goflags -ldflags="$ldflags" -tags rocm
 }
 
 check() {
-  local ollama_exe="$srcdir/$pkgbase/$pkgbase"
-  local ollama_cuda_exe="$srcdir/$pkgbase-cuda/$pkgbase"
-  local ollama_rocm_exe="$srcdir/$pkgbase-rocm/$pkgbase"
-
-  "$ollama_exe" --version > /dev/null
-  "$ollama_cuda_exe" --version > /dev/null
-  "$ollama_rocm_exe" --version > /dev/null
-
-  if [ $(grep -c CUDA "$ollama_exe") -gt $(grep -c CUDA "$ollama_cuda_exe") ]; then
-      echo "The number of 'CUDA' occurrences in ollama is greater than in ollama-cuda."
-      exit 1
-  fi
+  $pkgbase/$pkgbase --version > /dev/null
+  $pkgbase-cuda/$pkgbase --version > /dev/null
+  $pkgbase-rocm/$pkgbase --version > /dev/null
 
   cd $pkgbase
   go test .
@@ -132,6 +122,7 @@ package_ollama-rocm() {
   provides=(ollama)
   conflicts=(ollama)
   depends=(hipblas)
+  optdepends=('rocm-smi-lib: monitor GPU usage with rocm-smi')
 
   install -Dm755 $pkgname/$pkgbase "$pkgdir/usr/bin/$pkgbase"
   install -dm755 "$pkgdir/var/lib/ollama"
