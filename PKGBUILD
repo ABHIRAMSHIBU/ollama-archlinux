@@ -10,7 +10,7 @@ _ollamacommit=e01e535cbbb92e0d9645bd726e259e7d8a6c7598 # tag: v0.1.45
 # The llama.cpp git submodule commit hash can be found here:
 # https://github.com/ollama/ollama/tree/v0.1.45/llm
 _llama_cpp_commit=7c26775adb579e92b59c82e8084c07a1d0f75e9c
-pkgrel=1
+pkgrel=2
 pkgdesc='Create, run and share large language models (LLMs)'
 arch=(x86_64)
 url='https://github.com/ollama/ollama'
