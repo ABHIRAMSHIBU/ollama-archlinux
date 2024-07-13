@@ -5,32 +5,35 @@
 
 pkgbase=ollama
 pkgname=(ollama ollama-cuda ollama-rocm)
-pkgver=0.1.48
-_ollamacommit=717f7229eb4f9220d4070aae617923950643d327 # tag: v0.1.48
+pkgver=0.2.3
+_ollama_commit=22c5451fc28b20dd83a389c49d9caf6a1e50a9e3 # tag: v0.2.3
+_llama_cpp_commit=$(curl -sL "https://github.com/ollama/ollama/tree/$_ollama_commit/llm" | tr ' ' '\n' | tr '"' '\n' | grep ggerganov | cut -d/ -f5 | head -1)
 pkgrel=1
 pkgdesc='Create, run and share large language models (LLMs)'
 arch=(x86_64)
 url='https://github.com/ollama/ollama'
 license=(MIT)
 makedepends=(clblast cmake cuda git go rocm-hip-sdk rocm-opencl-sdk)
-source=(git+$url#commit=$_ollamacommit
-        llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=$(curl -sL "https://github.com/ollama/ollama/tree/$_ollamacommit/llm" | tr ' ' '\n' | tr '"' '\n' | grep ggerganov | cut -d/ -f5 | head -1)
+source=(git+$url#commit=$_ollama_commit
+        llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=$_llama_cpp_commit
         ollama.service
         sysusers.conf
         tmpfiles.d)
-b2sums=('30a18632cc4c8c374fca1998a2e4c97d0c16003fef1d0ebc8e32e781685929b95fdc45f44abf9fc1ab2f6464f40b3d6e8c6b59423c0b306669880622c61212ae'
-        'df130b63f823035cda495e596959ec85af6c49be03cff56623096b354704e5014190c51efd581e473a0c4c924945a5e422ab29bb6366906652345eedae2b79a6'
+b2sums=('285011adced9d8e1539cfcba2b029b85f436883ad31bed2b628e4ea79b132c066090bc9fcc7c9cb320b21cb69c395842d7ff106871ac8bc7830fb852b7b03ba2'
+        '82779cae79c6574e77fef58719e39cec7926957923ab4dde14de16b0ad8bb075334b15ee17921a7a183a4f2ad6c5c87551b6ad295e8cb11145b9e6b642c31ca8'
         '18a1468f5614f9737f6ff2e6c7dfb3dfc0ba82836a98e3f14f8e544e3aba8f74ef0a03c5376a0d0aa2e59e948701d7c639dda69477b051b732896021e753e32e'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
         'e8f2b19e2474f30a4f984b45787950012668bf0acb5ad1ebb25cd9776925ab4a6aa927f8131ed53e35b1c71b32c504c700fe5b5145ecd25c7a8284373bb951ed')
 
 prepare() {
+  echo "Using ollama git submodule llama.cpp commit $_llama_cpp_commit"
+
   # Prepare the git submodule by copying in files (the build process is sensitive to symlinks)
   rm -frv $pkgbase/llm/llama.cpp
   cp -r llama.cpp $pkgbase/llm/llama.cpp
 
-  # Enable LTO and set the CMake build type to "Release"
-  sed -i 's,T_CODE=on,T_CODE=on -D LLAMA_LTO=on -D CMAKE_BUILD_TYPE=Release,g' $pkgbase/llm/generate/gen_linux.sh
+  # Set the CMake build type to "Release"
+  sed -i 's,T_CODE=on,T_CODE=on -D CMAKE_BUILD_TYPE=Release,g' $pkgbase/llm/generate/gen_linux.sh
 
   # Copy the ollama directory to ollama-cuda and ollama-rocm
   cp -r $pkgbase $pkgbase-cuda
