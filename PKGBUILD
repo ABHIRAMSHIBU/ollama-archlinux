@@ -5,8 +5,8 @@
 
 pkgbase=ollama
 pkgname=(ollama ollama-cuda ollama-rocm)
-pkgver=0.3.5
-_ollama_commit=15c2d8fe149ba2b58aadbab615a6955f8821c7a9 # tag: v0.3.5
+pkgver=0.3.6
+_ollama_commit=4c4fe3f87fe1858b35bd0d41e093a0039ec4cee4 # tag: v0.3.6
 _llama_cpp_commit=$(curl -sL "https://github.com/ollama/ollama/tree/$_ollama_commit/llm" | tr ' ' '\n' | tr '"' '\n' | grep ggerganov | cut -d/ -f5 | head -1)
 pkgrel=1
 pkgdesc='Create, run and share large language models (LLMs)'
@@ -19,7 +19,7 @@ source=(git+$url#commit=$_ollama_commit
         ollama.service
         sysusers.conf
         tmpfiles.d)
-b2sums=('ffd07f77c0e823e21788f2cfe4b3ad47a763b0180f8211ab0bd8aaf1301b620653bc65fa6df16f27004cdc01e79de8c888cf4cca206ca9bb4d36f0326610b3a7'
+b2sums=('95f762b23dacb2def6179a0c29ff2b517804b73e09a05fb2fc6cf3d163f22aec1d235581085d8711ff902fbd779097a24d3b2e59b85e045740d13b3e56859eb6'
         'd9c0b8340b98376e558f401be15f6977d0adedfe0917a67ff3aeff57cb70fba1bfbb31916b663e8391d711494725ca6a9fe299587b1a45e8e86cbc697dade0ac'
         '18a1468f5614f9737f6ff2e6c7dfb3dfc0ba82836a98e3f14f8e544e3aba8f74ef0a03c5376a0d0aa2e59e948701d7c639dda69477b051b732896021e753e32e'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
