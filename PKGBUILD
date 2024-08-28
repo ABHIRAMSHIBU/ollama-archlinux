@@ -5,13 +5,13 @@
 
 pkgbase=ollama
 pkgname=(ollama ollama-cuda ollama-rocm)
-pkgver=0.3.6
-_ollama_commit=4c4fe3f87fe1858b35bd0d41e093a0039ec4cee4 # tag: v0.3.6
-_llama_cpp_commit=$(curl -sL "https://github.com/ollama/ollama/tree/$_ollama_commit/llm" | tr ' ' '\n' | tr '"' '\n' | grep ggerganov | cut -d/ -f5 | head -1)
-pkgrel=3
+pkgver=0.3.8
+_ollama_commit=93ea9240aee8a51b0fe455fdddedec2046438f95 # tag: v0.3.8
+pkgrel=1
 pkgdesc='Create, run and share large language models (LLMs)'
 arch=(x86_64)
 url='https://github.com/ollama/ollama'
+_llama_cpp_commit=$(curl -sL "https://github.com/ollama/ollama/tree/$_ollama_commit/llm" | tr ' ' '\n' | tr '"' '\n' | grep ggerganov | cut -d/ -f5 | head -1)
 license=(MIT)
 makedepends=(clblast cmake cuda git go rocm-hip-sdk rocm-opencl-sdk)
 source=(git+$url#commit=$_ollama_commit
@@ -19,14 +19,14 @@ source=(git+$url#commit=$_ollama_commit
         ollama.service
         sysusers.conf
         tmpfiles.d)
-b2sums=('95f762b23dacb2def6179a0c29ff2b517804b73e09a05fb2fc6cf3d163f22aec1d235581085d8711ff902fbd779097a24d3b2e59b85e045740d13b3e56859eb6'
+b2sums=('257494a951b4d426d5c4c76c13d50401d395ba5adc3720d0cbd0130f8c06d71ae6846f3711dc747ec80e6c58b6f8919e8e1386bd5e32b7c3f8aa454c8e4ed146'
         'd9c0b8340b98376e558f401be15f6977d0adedfe0917a67ff3aeff57cb70fba1bfbb31916b663e8391d711494725ca6a9fe299587b1a45e8e86cbc697dade0ac'
         '18a1468f5614f9737f6ff2e6c7dfb3dfc0ba82836a98e3f14f8e544e3aba8f74ef0a03c5376a0d0aa2e59e948701d7c639dda69477b051b732896021e753e32e'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
         'e8f2b19e2474f30a4f984b45787950012668bf0acb5ad1ebb25cd9776925ab4a6aa927f8131ed53e35b1c71b32c504c700fe5b5145ecd25c7a8284373bb951ed')
 
 prepare() {
-  echo "Using ollama git submodule llama.cpp commit $_llama_cpp_commit"
+  echo "Using llama.cpp git submodule commit $_llama_cpp_commit"
 
   # Prepare the git submodule by copying in files (the build process is sensitive to symlinks)
   rm -frv $pkgbase/llm/llama.cpp
@@ -48,7 +48,8 @@ prepare() {
 build() {
   export CFLAGS+=' -w'
   export CXXFLAGS+=' -w'
-  export CGO_CFLAGS="$CFLAGS" CGO_CPPFLAGS="$CPPFLAGS" CGO_CXXFLAGS="$CXXFLAGS" CGO_LDFLAGS="$LDFLAGS"
+  export LDFLAGS+=' -L/opt/cuda/targets/x86_64-linux/lib/stubs/'
+  export CGO_CFLAGS="$CFLAGS" CGO_CPPFLAGS="$CPPFLAGS" CGO_CXXFLAGS="$CXXFLAGS" CGO_LDFLAGS=" $LDFLAGS"
 
   local goflags='-buildmode=pie -trimpath -mod=readonly -modcacherw'
   local ldflags="-linkmode=external -buildid= -X github.com/ollama/ollama/version.Version=$pkgver -X github.com/ollama/ollama/server.mode=release"
