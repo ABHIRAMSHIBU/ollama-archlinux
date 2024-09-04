@@ -1,6 +1,6 @@
 pkgbase = ollama
 	pkgdesc = Create, run and share large language models (LLMs)
-	pkgver = 0.3.8
+	pkgver = 0.3.9
 	pkgrel = 1
 	url = https://github.com/ollama/ollama
 	arch = x86_64
@@ -10,14 +10,15 @@ pkgbase = ollama
 	makedepends = cuda
 	makedepends = git
 	makedepends = go
+	makedepends = parallel
 	makedepends = rocm-hip-sdk
 	makedepends = rocm-opencl-sdk
-	source = git+https://github.com/ollama/ollama#commit=93ea9240aee8a51b0fe455fdddedec2046438f95
+	source = git+https://github.com/ollama/ollama#commit=a1cef4d0a5f31280ea82b350605775931a6163cb
 	source = llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=1e6f6554aa11fa10160a5fda689e736c3c34169f
 	source = ollama.service
 	source = sysusers.conf
 	source = tmpfiles.d
-	b2sums = 257494a951b4d426d5c4c76c13d50401d395ba5adc3720d0cbd0130f8c06d71ae6846f3711dc747ec80e6c58b6f8919e8e1386bd5e32b7c3f8aa454c8e4ed146
+	b2sums = ccdfa24360709a73318c211158ebd9bf12b4ebc19808ad68c8435a309d3eedec6a0b924e1e577a2f9cc55a74caa7cbfa93a2582252c2b34f18a162b4eaeb1124
 	b2sums = d9c0b8340b98376e558f401be15f6977d0adedfe0917a67ff3aeff57cb70fba1bfbb31916b663e8391d711494725ca6a9fe299587b1a45e8e86cbc697dade0ac
 	b2sums = 18a1468f5614f9737f6ff2e6c7dfb3dfc0ba82836a98e3f14f8e544e3aba8f74ef0a03c5376a0d0aa2e59e948701d7c639dda69477b051b732896021e753e32e
 	b2sums = 3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec

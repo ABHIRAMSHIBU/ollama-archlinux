@@ -5,21 +5,21 @@
 
 pkgbase=ollama
 pkgname=(ollama ollama-cuda ollama-rocm)
-pkgver=0.3.8
-_ollama_commit=93ea9240aee8a51b0fe455fdddedec2046438f95 # tag: v0.3.8
+pkgver=0.3.9
+_ollama_commit=a1cef4d0a5f31280ea82b350605775931a6163cb # tag: v0.3.9
 pkgrel=1
 pkgdesc='Create, run and share large language models (LLMs)'
 arch=(x86_64)
 url='https://github.com/ollama/ollama'
 _llama_cpp_commit=$(curl -sL "https://github.com/ollama/ollama/tree/$_ollama_commit/llm" | tr ' ' '\n' | tr '"' '\n' | grep ggerganov | cut -d/ -f5 | head -1)
 license=(MIT)
-makedepends=(clblast cmake cuda git go rocm-hip-sdk rocm-opencl-sdk)
+makedepends=(clblast cmake cuda git go parallel rocm-hip-sdk rocm-opencl-sdk)
 source=(git+$url#commit=$_ollama_commit
         llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=$_llama_cpp_commit
         ollama.service
         sysusers.conf
         tmpfiles.d)
-b2sums=('257494a951b4d426d5c4c76c13d50401d395ba5adc3720d0cbd0130f8c06d71ae6846f3711dc747ec80e6c58b6f8919e8e1386bd5e32b7c3f8aa454c8e4ed146'
+b2sums=('ccdfa24360709a73318c211158ebd9bf12b4ebc19808ad68c8435a309d3eedec6a0b924e1e577a2f9cc55a74caa7cbfa93a2582252c2b34f18a162b4eaeb1124'
         'd9c0b8340b98376e558f401be15f6977d0adedfe0917a67ff3aeff57cb70fba1bfbb31916b663e8391d711494725ca6a9fe299587b1a45e8e86cbc697dade0ac'
         '18a1468f5614f9737f6ff2e6c7dfb3dfc0ba82836a98e3f14f8e544e3aba8f74ef0a03c5376a0d0aa2e59e948701d7c639dda69477b051b732896021e753e32e'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
@@ -36,8 +36,7 @@ prepare() {
   sed -i 's,T_CODE=on,T_CODE=on -D CMAKE_BUILD_TYPE=Release,g' $pkgbase/llm/generate/gen_linux.sh
 
   # Copy the ollama directory to ollama-cuda and ollama-rocm
-  cp -r $pkgbase $pkgbase-cuda
-  cp -r $pkgbase $pkgbase-rocm
+  parallel cp -r $pkgbase ::: $pkgbase-cuda $pkgbase-rocm
 
   # Prepare the ollama-rocm directory for building for ROCm
   cd $pkgbase-rocm/llm/generate
