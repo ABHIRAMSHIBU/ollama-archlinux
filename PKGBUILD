@@ -7,12 +7,13 @@ pkgbase=ollama
 pkgname=(ollama ollama-cuda ollama-rocm)
 pkgver=0.3.9
 _ollama_commit=a1cef4d0a5f31280ea82b350605775931a6163cb # tag: v0.3.9
-pkgrel=2
+pkgrel=3
 pkgdesc='Create, run and share large language models (LLMs)'
 arch=(x86_64)
 url='https://github.com/ollama/ollama'
 _llama_cpp_commit=$(curl -sL "https://github.com/ollama/ollama/tree/$_ollama_commit/llm" | tr ' ' '\n' | tr '"' '\n' | grep ggerganov | cut -d/ -f5 | head -1)
 license=(MIT)
+install=msg.install
 makedepends=(clblast cmake cuda git go rocm-hip-sdk rocm-opencl-sdk)
 source=(git+$url#commit=$_ollama_commit
         llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=$_llama_cpp_commit

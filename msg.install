@@ -1,0 +1,6 @@
+post_upgrade() {
+  echo 'NOTE:'
+  echo '=> Models are now stored in /var/lib/ollama instead of /var/lib/ollama/.ollama/ by default.'
+  echo '=> /usr/share/ollama is now a symlink to /var/lib/ollama, to make life easier for some users.'
+  echo '=> It is also possible to package Ollama models as packages now, see "ollama-tinyllama" as an example.'
+}
