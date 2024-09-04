@@ -7,13 +7,13 @@ pkgbase=ollama
 pkgname=(ollama ollama-cuda ollama-rocm)
 pkgver=0.3.9
 _ollama_commit=a1cef4d0a5f31280ea82b350605775931a6163cb # tag: v0.3.9
-pkgrel=1
+pkgrel=2
 pkgdesc='Create, run and share large language models (LLMs)'
 arch=(x86_64)
 url='https://github.com/ollama/ollama'
 _llama_cpp_commit=$(curl -sL "https://github.com/ollama/ollama/tree/$_ollama_commit/llm" | tr ' ' '\n' | tr '"' '\n' | grep ggerganov | cut -d/ -f5 | head -1)
 license=(MIT)
-makedepends=(clblast cmake cuda git go parallel rocm-hip-sdk rocm-opencl-sdk)
+makedepends=(clblast cmake cuda git go rocm-hip-sdk rocm-opencl-sdk)
 source=(git+$url#commit=$_ollama_commit
         llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=$_llama_cpp_commit
         ollama.service
@@ -21,7 +21,7 @@ source=(git+$url#commit=$_ollama_commit
         tmpfiles.d)
 b2sums=('ccdfa24360709a73318c211158ebd9bf12b4ebc19808ad68c8435a309d3eedec6a0b924e1e577a2f9cc55a74caa7cbfa93a2582252c2b34f18a162b4eaeb1124'
         'd9c0b8340b98376e558f401be15f6977d0adedfe0917a67ff3aeff57cb70fba1bfbb31916b663e8391d711494725ca6a9fe299587b1a45e8e86cbc697dade0ac'
-        '18a1468f5614f9737f6ff2e6c7dfb3dfc0ba82836a98e3f14f8e544e3aba8f74ef0a03c5376a0d0aa2e59e948701d7c639dda69477b051b732896021e753e32e'
+        '031e0809a7f564de87017401c83956d43ac29bd0e988b250585af728b952a27d139b3cad0ab1e43750e2cd3b617287d3b81efc4a70ddd61709127f68bd15eabd'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
         'e8f2b19e2474f30a4f984b45787950012668bf0acb5ad1ebb25cd9776925ab4a6aa927f8131ed53e35b1c71b32c504c700fe5b5145ecd25c7a8284373bb951ed')
 
@@ -36,7 +36,8 @@ prepare() {
   sed -i 's,T_CODE=on,T_CODE=on -D CMAKE_BUILD_TYPE=Release,g' $pkgbase/llm/generate/gen_linux.sh
 
   # Copy the ollama directory to ollama-cuda and ollama-rocm
-  parallel cp -r $pkgbase ::: $pkgbase-cuda $pkgbase-rocm
+  cp -r $pkgbase $pkgbase-cuda
+  cp -r $pkgbase $pkgbase-rocm
 
   # Prepare the ollama-rocm directory for building for ROCm
   cd $pkgbase-rocm/llm/generate
@@ -101,6 +102,8 @@ package_ollama() {
   install -Dm644 sysusers.conf "$pkgdir/usr/lib/sysusers.d/ollama.conf"
   install -Dm644 tmpfiles.d "$pkgdir/usr/lib/tmpfiles.d/ollama.conf"
   install -Dm644 $pkgbase/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+
+  ln -s /var/lib/ollama "$pkgdir/usr/share/ollama"
 }
 
 package_ollama-cuda() {
@@ -115,6 +118,8 @@ package_ollama-cuda() {
   install -Dm644 sysusers.conf "$pkgdir/usr/lib/sysusers.d/ollama.conf"
   install -Dm644 tmpfiles.d "$pkgdir/usr/lib/tmpfiles.d/ollama.conf"
   install -Dm644 $pkgbase/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+
+  ln -s /var/lib/ollama "$pkgdir/usr/share/ollama"
 }
 
 package_ollama-rocm() {
@@ -130,4 +135,6 @@ package_ollama-rocm() {
   install -Dm644 sysusers.conf "$pkgdir/usr/lib/sysusers.d/ollama.conf"
   install -Dm644 tmpfiles.d "$pkgdir/usr/lib/tmpfiles.d/ollama.conf"
   install -Dm644 $pkgbase/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+
+  ln -s /var/lib/ollama "$pkgdir/usr/share/ollama"
 }
