@@ -5,22 +5,21 @@
 
 pkgbase=ollama
 pkgname=(ollama ollama-cuda ollama-rocm)
-pkgver=0.3.12
-_ollama_commit=e9e9bdb8d904f009e8b1e54af9f77624d481cfb2 # tag: v0.3.12
+pkgver=0.3.13
 pkgrel=1
 pkgdesc='Create, run and share large language models (LLMs)'
 arch=(x86_64)
 url='https://github.com/ollama/ollama'
-_llama_cpp_commit=$(curl -sL "https://github.com/ollama/ollama/tree/$_ollama_commit/llm" | tr ' ' '\n' | tr '"' '\n' | grep ggerganov | cut -d/ -f5 | head -1)
+_llama_cpp_commit=$(curl -sL "https://github.com/ollama/ollama/tree/v$pkgver/llm" | tr ' ' '\n' | tr '"' '\n' | grep ggerganov | cut -d/ -f5 | head -1)
 license=(MIT)
 install=msg.install
 makedepends=(clblast cmake cuda git go rocm-hip-sdk rocm-opencl-sdk)
-source=(git+$url#commit=$_ollama_commit
+source=(git+$url#tag=v$pkgver
         llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=$_llama_cpp_commit
         ollama.service
         sysusers.conf
         tmpfiles.d)
-b2sums=('7b230922a233f0be967abb40b300125fb59ed64850a109db185954c549e12e5de0c1be094c1cdb67484c9e8705804a3761bfefa517fac1adfb05bcae8d2c197d'
+b2sums=('7fea8dc71912ea17ceeabd19f20550f2dace4d5532402318c94ca2df45bebeaccc3e2be4e2e72fccad8e235fbca90cce76f463e4117edc7bd59389b2e2cb0c7b'
         'e568ac334cf07b69f98c4581f212f2e30bdebf1f285a37e4bb5c8ac31733df9a3c125e6d16b7f6bbe412cedb11d249a07ca9793a487e0ad34810cbb35cd32ee2'
         '031e0809a7f564de87017401c83956d43ac29bd0e988b250585af728b952a27d139b3cad0ab1e43750e2cd3b617287d3b81efc4a70ddd61709127f68bd15eabd'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
@@ -103,6 +102,7 @@ package_ollama() {
   install -Dm644 sysusers.conf "$pkgdir/usr/lib/sysusers.d/ollama.conf"
   install -Dm644 tmpfiles.d "$pkgdir/usr/lib/tmpfiles.d/ollama.conf"
   install -Dm644 $pkgbase/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 $pkgbase/llm/llama.cpp/LICENSE "$pkgdir/usr/share/licenses/$pkgname/llama.cpp-LICENSE"
 
   ln -s /var/lib/ollama "$pkgdir/usr/share/ollama"
 }
@@ -119,6 +119,7 @@ package_ollama-cuda() {
   install -Dm644 sysusers.conf "$pkgdir/usr/lib/sysusers.d/ollama.conf"
   install -Dm644 tmpfiles.d "$pkgdir/usr/lib/tmpfiles.d/ollama.conf"
   install -Dm644 $pkgbase/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 $pkgbase/llm/llama.cpp/LICENSE "$pkgdir/usr/share/licenses/$pkgname/llama.cpp-LICENSE"
 
   ln -s /var/lib/ollama "$pkgdir/usr/share/ollama"
 }
@@ -136,6 +137,14 @@ package_ollama-rocm() {
   install -Dm644 sysusers.conf "$pkgdir/usr/lib/sysusers.d/ollama.conf"
   install -Dm644 tmpfiles.d "$pkgdir/usr/lib/tmpfiles.d/ollama.conf"
   install -Dm644 $pkgbase/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 $pkgbase/llm/llama.cpp/LICENSE "$pkgdir/usr/share/licenses/$pkgname/llama.cpp-LICENSE"
 
   ln -s /var/lib/ollama "$pkgdir/usr/share/ollama"
+}
+
+package_ollama-docs() {
+  pkgdesc='Documentation for Ollama'
+
+  install -d "$pkgdir/usr/share/doc"
+  cp -r $pkgbase/docs "$pkgdir/usr/share/doc/$pkgbase"
 }
