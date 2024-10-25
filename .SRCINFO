@@ -1,7 +1,7 @@
 pkgbase = ollama
 	pkgdesc = Create, run and share large language models (LLMs)
 	pkgver = 0.3.12
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/ollama/ollama
 	install = msg.install
 	arch = x86_64
@@ -13,7 +13,7 @@ pkgbase = ollama
 	makedepends = go
 	makedepends = rocm-hip-sdk
 	makedepends = rocm-opencl-sdk
-	source = git+https://github.com/ollama/ollama#commit=e9e9bdb8d904f009e8b1e54af9f77624d481cfb2
+	source = git+https://github.com/ollama/ollama#tag=v0.3.12
 	source = llama.cpp::git+https://github.com/ggerganov/llama.cpp#commit=8962422b1c6f9b8b15f5aeaea42600bcc2d44177
 	source = ollama.service
 	source = sysusers.conf
