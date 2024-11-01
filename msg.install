@@ -1,5 +1,0 @@
-post_upgrade() {
-  echo 'NOTE:'
-  echo '=> Models are stored in /var/lib/ollama by default.'
-  echo '=> For an example of packaging Ollama models, see ollama-tinyllama-1b.'
-}
