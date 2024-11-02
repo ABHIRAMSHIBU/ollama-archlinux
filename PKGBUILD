@@ -72,7 +72,6 @@ package_ollama() {
 
 package_ollama-docs() {
   pkgdesc='Documentation for Ollama'
-  arch=(any)
 
   install -d "$pkgdir/usr/share/doc"
   cp -r $pkgbase/docs "$pkgdir/usr/share/doc/$pkgbase"
