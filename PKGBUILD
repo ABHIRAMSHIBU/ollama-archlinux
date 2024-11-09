@@ -5,7 +5,7 @@
 
 pkgbase=ollama
 pkgname=(ollama ollama-docs)
-pkgver=0.4.0
+pkgver=0.4.1
 pkgrel=1
 pkgdesc='Create, run and share large language models (LLMs)'
 arch=(x86_64)
@@ -16,14 +16,13 @@ source=(git+$url#tag=v$pkgver
         ollama.service
         sysusers.conf
         tmpfiles.d)
-b2sums=('f32a0be8c057ec9f574ac8eb685bec96421512b4146593373d2ff47088264f3d8295424065606d5106b1fad2e6c0dcda45684fb1c1038791b26f78042b26fd88'
+b2sums=('d1efcd4169f0c259c5632bc430d26483d8fc42961e9baaf8ceda5ea4a176338688371ee373e1608d63d52d1d9b97569b4ccf60c7dc91c3a5deeb30074cd6d505'
         '031e0809a7f564de87017401c83956d43ac29bd0e988b250585af728b952a27d139b3cad0ab1e43750e2cd3b617287d3b81efc4a70ddd61709127f68bd15eabd'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
         'e8f2b19e2474f30a4f984b45787950012668bf0acb5ad1ebb25cd9776925ab4a6aa927f8131ed53e35b1c71b32c504c700fe5b5145ecd25c7a8284373bb951ed')
 
 build() {
-  export CFLAGS+=' -w'
-  export CXXFLAGS+=' -w'
+  export CFLAGS+=' -w' CXXFLAGS+=' -w'
   export LDFLAGS+=' -L/opt/cuda/targets/x86_64-linux/lib/stubs/'
   export CGO_CFLAGS="$CFLAGS" CGO_CPPFLAGS="$CPPFLAGS" CGO_CXXFLAGS="$CXXFLAGS" CGO_LDFLAGS="$LDFLAGS"
 
