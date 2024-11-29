@@ -1,41 +1,50 @@
 # Maintainer: Alexander F. Rødseth <xyproto@archlinux.org>
+# Maintainer: Sven-Hendrik Haase <svenstaro@archlinux.org>
 # Contributor: Steven Allen <steven@stebalien.com>
 # Contributor: Matt Harrison <matt@harrison.us.com>
 # Contributor: Kainoa Kanter <kainoa@t1c.dev>
 
 pkgbase=ollama
-pkgname=(ollama ollama-docs)
-pkgver=0.4.4
+pkgname=(ollama ollama-rocm ollama-cuda ollama-docs)
+pkgver=0.4.5
 pkgrel=1
 pkgdesc='Create, run and share large language models (LLMs)'
 arch=(x86_64)
 url='https://github.com/ollama/ollama'
 license=(MIT)
-makedepends=(cmake git go)
-source=(git+$url#tag=v$pkgver
+makedepends=(cmake git go hipblas cuda clblast)
+source=(git+https://github.com/ollama/ollama#tag=v$pkgver
+        ollama-7499.patch::https://github.com/ollama/ollama/pull/7499.patch
+        ollama-ld.conf
         ollama.service
         sysusers.conf
         tmpfiles.d)
-b2sums=('c2ae1e84915a4846bd3e509a57dbe6e852cc20d2f6df34427d657981dc6d6d11223442ea881fac911ffcc734049b75ef837c52ed1526a6f59fed6bb8ff86abf3'
+b2sums=('6cb888020426aa2dc6619dbc1ffbaadaac3ce40c764afbda4d620943c677a040e24e728118608b286e6ad57ae693da24d8fdf24dfd929fb9de43f4279ac18c25'
+        '2bec2f814cd4ad51f0dec244ec9f9af781961b442a053386344dee584203ea264d45b226b235f2c50e615fa39cf331a6c3a7f8bcfec43414e1cd98d567453a2f'
+        '121a7854b5a7ffb60226aaf22eed1f56311ab7d0a5630579525211d5c096040edbcfd2608169a4b6d83e8b4e4855dbb22f8ebf3d52de78a34ea3d4631b7eff36'
         '031e0809a7f564de87017401c83956d43ac29bd0e988b250585af728b952a27d139b3cad0ab1e43750e2cd3b617287d3b81efc4a70ddd61709127f68bd15eabd'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
         'e8f2b19e2474f30a4f984b45787950012668bf0acb5ad1ebb25cd9776925ab4a6aa927f8131ed53e35b1c71b32c504c700fe5b5145ecd25c7a8284373bb951ed')
 
+prepare() {
+  cd ollama
+  patch -Np1 -i "$srcdir"/ollama-7499.patch
+}
+
 build() {
-  export CFLAGS+=' -w' CXXFLAGS+=' -w'
-  export LDFLAGS+=' -L/opt/cuda/targets/x86_64-linux/lib/stubs/'
-  export CGO_CFLAGS="$CFLAGS" CGO_CPPFLAGS="$CPPFLAGS" CGO_CXXFLAGS="$CXXFLAGS" CGO_LDFLAGS="$LDFLAGS"
+  export CGO_CPPFLAGS="${CPPFLAGS}"
+  export CGO_CFLAGS="${CFLAGS}"
+  export CGO_CXXFLAGS="${CXXFLAGS}"
+  export CGO_LDFLAGS="${LDFLAGS}"
+  export GOPATH="${srcdir}"
+  export GOFLAGS="-buildmode=pie -mod=readonly -modcacherw '-ldflags=-linkmode=external -compressdwarf=false -X=github.com/ollama/ollama/version.Version=$pkgver -X=github.com/ollama/ollama/server.mode=release'"
 
-  local goflags='-buildmode=pie -trimpath -mod=readonly -modcacherw'
-  local ldflags="-linkmode=external -buildid= -X github.com/ollama/ollama/version.Version=$pkgver -X github.com/ollama/ollama/server.mode=release"
+  cd ollama
 
-  # Ollama with CPU only support
-  export ROCM_PATH=/disabled
-  export CUDA_LIB_DIR=/disabled
-
-  cd $pkgbase
-  go generate ./...
-  go build $goflags -ldflags="$ldflags"
+  # Unset these otherwise somehow nvcc will try to use them.
+  unset CFLAGS CXXFLAGS
+  make dist CUDA_12_PATH=/opt/cuda
+  go build .
 }
 
 check() {
@@ -45,6 +54,10 @@ check() {
 }
 
 package_ollama() {
+  install -Dm755 ollama/ollama "$pkgdir/usr/bin/ollama"
+  mkdir -p "$pkgdir"/usr/lib/ollama/runners
+  cp -r ollama/dist/linux-amd64/lib/ollama/runners/cpu* "$pkgdir"/usr/lib/ollama/runners/
+
   install -Dm755 $pkgname/$pkgbase "$pkgdir/usr/bin/$pkgbase"
   install -dm755 "$pkgdir/var/lib/ollama"
   install -Dm644 ollama.service "$pkgdir/usr/lib/systemd/system/ollama.service"
@@ -53,6 +66,22 @@ package_ollama() {
   install -Dm644 $pkgbase/LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 
   ln -s /var/lib/ollama "$pkgdir/usr/share/ollama"
+}
+
+package_ollama-rocm() {
+  pkgdesc='Create, run and share large language models (LLMs) with ROCm'
+  depends+=(ollama hipblas)
+
+  mkdir -p "$pkgdir"/usr/lib/ollama/runners
+  cp -r ollama/dist/linux-amd64/lib/ollama/runners/rocm* "$pkgdir"/usr/lib/ollama/runners
+}
+
+package_ollama-cuda() {
+  pkgdesc='Create, run and share large language models (LLMs) with CUDA'
+  depends+=(ollama cuda)
+
+  mkdir -p "$pkgdir"/usr/lib/ollama/runners
+  cp -r ollama/dist/linux-amd64/lib/ollama/runners/cuda* "$pkgdir"/usr/lib/ollama/runners
 }
 
 package_ollama-docs() {
