@@ -6,21 +6,21 @@
 
 pkgbase=ollama
 pkgname=(ollama ollama-rocm ollama-cuda ollama-docs)
-pkgver=0.4.7
-pkgrel=2
+pkgver=0.5.1
+pkgrel=1
 pkgdesc='Create, run and share large language models (LLMs)'
 arch=(x86_64)
 url='https://github.com/ollama/ollama'
 license=(MIT)
-makedepends=(cmake git go hipblas cuda clblast)
+makedepends=(cmake git go hipblas clblast)
 source=(git+https://github.com/ollama/ollama#tag=v$pkgver
         ollama-7499.patch::https://github.com/ollama/ollama/pull/7499.patch
         ollama-ld.conf
         ollama.service
         sysusers.conf
         tmpfiles.d)
-b2sums=('66267f66e3ab1c2e6263e5608d6bb170be73a0930001ce6d6969c45ec3f3d23b3ccca41afb5b2d80ea3997301cb5ad8cbfe2beba65874dd47a537c333daacd84'
-        '974b803ceaf31faca29da05d146f1bd3a7fabaf43fb62dd4e981a93da9e425af46d54e6b3e12f75c66715c7d6b53aadc2ffe728eda162d9c32a132c74ebc0527'
+b2sums=('SKIP'
+        '1bf92385bd502b99470bbb3becdf09efbcfeeab2f0a71f135f50467358603a5cf115896b7201f9caa0aa1e1643b5a443969833055fee51c116aedaef096ca60c'
         '121a7854b5a7ffb60226aaf22eed1f56311ab7d0a5630579525211d5c096040edbcfd2608169a4b6d83e8b4e4855dbb22f8ebf3d52de78a34ea3d4631b7eff36'
         '031e0809a7f564de87017401c83956d43ac29bd0e988b250585af728b952a27d139b3cad0ab1e43750e2cd3b617287d3b81efc4a70ddd61709127f68bd15eabd'
         '3aabf135c4f18e1ad745ae8800db782b25b15305dfeaaa031b4501408ab7e7d01f66e8ebb5be59fc813cfbff6788d08d2e48dcf24ecc480a40ec9db8dbce9fec'
@@ -34,7 +34,12 @@ prepare() {
 build() {
   export CGO_CPPFLAGS="${CPPFLAGS}"
   export CGO_CFLAGS="${CFLAGS}"
-  # export CGO_CXXFLAGS="${CXXFLAGS}"
+  export CGO_CXXFLAGS="-march=x86-64 -mtune=generic -O2 -pipe -fno-plt -fexceptions \
+        -Wp,-D_FORTIFY_SOURCE=3 -Wformat -Werror=format-security \
+        -fcf-protection \
+        -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer\
+        -Wp,-D_GLIBCXX_ASSERTIONS"
+#-fstack-clash-protection 
   export CGO_LDFLAGS="${LDFLAGS}"
   export GOPATH="${srcdir}"
   export GOFLAGS="-buildmode=pie -mod=readonly -modcacherw '-ldflags=-linkmode=external -compressdwarf=false -X=github.com/ollama/ollama/version.Version=$pkgver -X=github.com/ollama/ollama/server.mode=release'"
